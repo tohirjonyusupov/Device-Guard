@@ -106,52 +106,52 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-slate-900 font-bold text-lg">
-                my<span className="text-indigo-600">devices</span>
-              </span>
-            </div>
-            <div className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Imkoniyatlar</a>
-              <a href="#how" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Qanday ishlaydi</a>
-              <a href="#check" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Tekshirish</a>
-            </div>
-            <div className="hidden md:flex items-center gap-3">
-              <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors">
-                Kirish
-              </Link>
-              <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-200">
-                Boshlash <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <button className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+            <Shield className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-slate-900 font-bold text-lg">
+            my<span className="text-indigo-600">devices</span>
+          </span>
+        </div>
+        <div className="hidden md:flex items-center gap-6">
+          <a href="#features" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Imkoniyatlar</a>
+          <a href="#how" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Qanday ishlaydi</a>
+          <a href="#check" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">Tekshirish</a>
+        </div>
+        <div className="hidden md:flex items-center gap-3">
+          <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors">
+            Kirish
+          </Link>
+          <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-200">
+            Boshlash <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <button className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
           </div>
         </div>
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
-            <a href="#features" className="block px-4 py-2.5 rounded-xl text-sm text-slate-600">Imkoniyatlar</a>
-            <a href="#how" className="block px-4 py-2.5 rounded-xl text-sm text-slate-600">Qanday ishlaydi</a>
-            <a href="#check" className="block px-4 py-2.5 rounded-xl text-sm text-slate-600">Tekshirish</a>
-            <Link href="/dashboard" className="block px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm mt-2">Boshlash</Link>
+        <a href="#features" className="block px-4 py-2.5 rounded-xl text-sm text-slate-600">Imkoniyatlar</a>
+        <a href="#how" className="block px-4 py-2.5 rounded-xl text-sm text-slate-600">Qanday ishlaydi</a>
+        <a href="#check" className="block px-4 py-2.5 rounded-xl text-sm text-slate-600">Tekshirish</a>
+        <Link href="/dashboard" className="block px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm mt-2">Boshlash</Link>
           </div>
         )}
       </nav>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
+      <section className="relative overflow-hidden bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-900/30 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-indigo-900/30 rounded-full blur-3xl"></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
@@ -255,7 +255,7 @@ export default function HomePage() {
             {features.map((f, i) => (
               <div key={i} className="bg-white rounded-2xl p-6 border border-slate-200/70 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-50 transition-all duration-300 group">
                 <div className={`w-12 h-12 rounded-2xl ${f.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${f.color} flex items-center justify-center`}>
+                  <div className={`w-7 h-7 rounded-lg bg-linear-to-br ${f.color} flex items-center justify-center`}>
                     <f.icon className="w-4 h-4 text-white" />
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export default function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, i) => (
               <div key={i}>
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-200">
+                <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-200">
                   <span className="text-xl font-bold">{step.num}</span>
                 </div>
                 <h3 className="text-slate-900 font-semibold mb-2">{step.title}</h3>
@@ -334,9 +334,9 @@ export default function HomePage() {
 
             {searchDone && (
               <div className={`mt-5 rounded-xl p-4 text-left border ${foundDevice?.status === 'lost' ? 'bg-red-500/10 border-red-500/30' :
-                  foundDevice?.status === 'found' ? 'bg-blue-500/10 border-blue-500/30' :
-                    foundDevice ? 'bg-emerald-500/10 border-emerald-500/30' :
-                      'bg-slate-500/10 border-slate-500/30'
+                foundDevice?.status === 'found' ? 'bg-blue-500/10 border-blue-500/30' :
+                  foundDevice ? 'bg-emerald-500/10 border-emerald-500/30' :
+                    'bg-slate-500/10 border-slate-500/30'
                 }`}>
                 {!foundDevice ? (
                   <div className="flex items-center gap-3">
@@ -380,8 +380,8 @@ export default function HomePage() {
       {/* CTA */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-3xl p-12 border border-indigo-100">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-indigo-200">
+          <div className="bg-linear-to-br from-indigo-50 to-violet-50 rounded-3xl p-12 border border-indigo-100">
+            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-indigo-200">
               <Smartphone className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 mb-4">Qurilmalaringizni himoya qilishni boshlang</h2>
