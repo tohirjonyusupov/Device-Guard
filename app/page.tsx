@@ -28,6 +28,8 @@ export default function HomePage() {
   const [foundDevice, setFoundDevice] = useState<Device | null>(null);
   const [searchDone, setSearchDone] = useState(false);
 
+  const HERO_IMAGE = 'https://images.unsplash.com/photo-1772683748238-95a91b0f7f43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkZXZpY2VzJTIwc21hcnRwaG9uZSUyMGxhcHRvcCUyMGdhZGdldHN8ZW58MXx8fHwxNzczNzM3MTM2fDA&ixlib=rb-4.1.0&q=80&w=1080';
+
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
     setSearching(true);
@@ -145,44 +147,97 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
+        {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-900/30 rounded-full blur-3xl"></div>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-400/20 rounded-full px-4 py-1.5 text-indigo-300 text-sm mb-6">
-              <Star className="w-3.5 h-3.5 fill-indigo-400 text-indigo-400" />
-              O'zbekistondagi eng ishonchli qurilma platformasi
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-400/20 rounded-full px-4 py-1.5 text-indigo-300 text-sm mb-6">
+                <Star className="w-3.5 h-3.5 fill-indigo-400 text-indigo-400" />
+                O'zbekistondagi eng ishonchli qurilma platformasi
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white mb-6 leading-tight" style={{ fontWeight: 800, lineHeight: 1.15 }}>
+                Qurilmalaringizni{' '}
+                <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                  himoya qiling
+                </span>
+              </h1>
+              <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                MyDevices orqali barcha qurilmalaringizni ro'yxatdan o'tkazing. Yo'qolsa bir klik bilan bildirishnomabergin — topilishi osonlashsin.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all font-medium shadow-lg shadow-indigo-900/50"
+                >
+                  Bepul boshlash <ArrowRight className="w-4 h-4" />
+                </Link>
+                <a
+                  href="#check"
+                  className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all font-medium border border-white/10"
+                >
+                  <Search className="w-4 h-4" /> Qurilma tekshirish
+                </a>
+              </div>
+
+              {/* Mini stats */}
+              <div className="flex flex-wrap gap-6 mt-10 pt-10 border-t border-white/10">
+                {stats.slice(0, 3).map((s, i) => (
+                  <div key={i}>
+                    <div className="text-2xl text-white" style={{ fontWeight: 700 }}>{s.value}</div>
+                    <div className="text-slate-400 text-xs mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
-              Qurilmalaringizni{' '}
-              <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
-                himoya qiling
-              </span>
-            </h1>
-            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-              MyDevices orqali barcha qurilmalaringizni ro'yxatdan o'tkazing. Yo'qolsa bir klik bilan bildirishnomabergin — topilishi osonlashsin.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/dashboard" className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition-all font-medium shadow-lg shadow-indigo-900/50">
-                Bepul boshlash <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a href="#check" className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all font-medium border border-white/10">
-                <Search className="w-4 h-4" /> Qurilma tekshirish
-              </a>
-            </div>
-            <div className="flex flex-wrap gap-8 mt-10 pt-10 border-t border-white/10">
-              {stats.map((s, i) => (
-                <div key={i}>
-                  <div className="text-2xl font-bold text-white">{s.value}</div>
-                  <div className="text-slate-400 text-xs mt-0.5">{s.label}</div>
+
+            {/* Hero image */}
+            <div className="relative hidden lg:block">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-indigo-900/50 border border-white/10">
+                <img
+                  src={HERO_IMAGE}
+                  alt="Qurilmalar"
+                  className="w-full h-80 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+              </div>
+
+              {/* Floating cards */}
+              <div className="absolute -top-4 -left-6 bg-white rounded-2xl p-3 shadow-2xl border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <div className="text-slate-900 text-sm" style={{ fontWeight: 600 }}>iPhone 15 Pro</div>
+                    <div className="text-emerald-600 text-xs">Faol — Himoyalangan</div>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="absolute -bottom-4 -right-6 bg-white rounded-2xl p-3 shadow-2xl border border-slate-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <div className="text-slate-900 text-sm" style={{ fontWeight: 600 }}>AirPods Pro 2</div>
+                    <div className="text-red-600 text-xs">Yo'qolgan deb belgilandi</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+
+
 
       {/* Features */}
       <section id="features" className="py-24 bg-slate-50">
@@ -278,12 +333,11 @@ export default function HomePage() {
             </div>
 
             {searchDone && (
-              <div className={`mt-5 rounded-xl p-4 text-left border ${
-                foundDevice?.status === 'lost' ? 'bg-red-500/10 border-red-500/30' :
-                foundDevice?.status === 'found' ? 'bg-blue-500/10 border-blue-500/30' :
-                foundDevice ? 'bg-emerald-500/10 border-emerald-500/30' :
-                'bg-slate-500/10 border-slate-500/30'
-              }`}>
+              <div className={`mt-5 rounded-xl p-4 text-left border ${foundDevice?.status === 'lost' ? 'bg-red-500/10 border-red-500/30' :
+                  foundDevice?.status === 'found' ? 'bg-blue-500/10 border-blue-500/30' :
+                    foundDevice ? 'bg-emerald-500/10 border-emerald-500/30' :
+                      'bg-slate-500/10 border-slate-500/30'
+                }`}>
                 {!foundDevice ? (
                   <div className="flex items-center gap-3">
                     <Search className="w-5 h-5 text-slate-400 shrink-0" />
