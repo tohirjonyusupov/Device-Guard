@@ -9,6 +9,21 @@ export type DeviceCategory =
 
 export type DeviceStatus = 'active' | 'lost' | 'found';
 
+export interface LoginForm {
+  email: string;
+  password: string;
+  remember: boolean;
+}
+
+export interface RegisterForm {
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  agree: boolean;
+}
+
 export interface Device {
   id: string;
   name: string;
@@ -26,4 +41,11 @@ export interface Device {
   purchaseDate?: string;
   lastLocation?: string;
   reward?: number;
+}
+
+export interface AuthUser {
+  fullName: string;
+  email: string;
+  password: string;
+  phone?: string;
 }
