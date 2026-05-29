@@ -170,16 +170,6 @@ export default function HomePage() {
                   <Search className="w-4 h-4" /> Qurilma tekshirish
                 </a>
               </div>
-
-              {/* Mini stats */}
-              <div className="flex flex-wrap gap-6 mt-10 pt-10 border-t border-white/10">
-                {stats.slice(0, 3).map((s, i) => (
-                  <div key={i}>
-                    <div className="text-2xl text-white" style={{ fontWeight: 700 }}>{s.value}</div>
-                    <div className="text-slate-400 text-xs mt-0.5">{s.label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Hero image */}
