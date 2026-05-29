@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum DeviceCategory {
+  phone
+  laptop
+  tablet
+  watch
+  headphones
+  camera
+  other
+}
+
+enum DeviceStatus {
+  active
+  lost
+  found
+}
+
+model User {
+  id           String   @id @default(uuid())
+  fullName     String
+  email        String   @unique
+  phone        String?
+  role         UserRole @default(user)
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  devices Device[]
+
+  @@map("users")
+}
+
+model Device {
+  id           String         @id @default(uuid())
+  ownerId      String
+  name         String
+  brand        String
+  model        String
+  category     DeviceCategory
+  serialNumber String         @unique
+  imei         String?        @unique
+  status       DeviceStatus   @default(active)
+  dateAdded    DateTime       @default(now())
+  dateLost     DateTime?
+  dateFound    DateTime?
+  color        String?
+  description  String?
+  purchaseDate DateTime?
+  lastLocation String?
+  reward       Int?
+  updatedAt    DateTime       @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([category])
+  @@map("devices")
+}
