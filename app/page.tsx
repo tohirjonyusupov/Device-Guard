@@ -68,26 +68,12 @@ export default function HomePage() {
       bg: 'bg-sky-50',
     },
     {
-      icon: Globe,
-      title: "Global ma'lumotlar bazasi",
-      desc: "Barcha ro'yxatdan o'tgan qurilmalar umumiy ma'lumotlar bazasida saqlanadi.",
-      color: 'from-emerald-500 to-teal-600',
-      bg: 'bg-emerald-50',
-    },
-    {
       icon: Zap,
       title: 'Tezkor natija',
       desc: 'Serial raqam yoki IMEI orqali bir soniyada qurilma holatini bilib oling.',
       color: 'from-amber-500 to-orange-600',
       bg: 'bg-amber-50',
-    },
-    {
-      icon: Lock,
-      title: 'Xavfsiz platforma',
-      desc: "Ma'lumotlaringiz shifrlangan holda saqlanadi va faqat siz boshqarasiz.",
-      color: 'from-violet-500 to-purple-600',
-      bg: 'bg-violet-50',
-    },
+    }
   ];
 
   const stats = [
