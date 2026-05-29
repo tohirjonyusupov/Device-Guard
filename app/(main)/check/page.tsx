@@ -14,8 +14,8 @@ import {
   ArrowLeft,
   Smartphone,
 } from 'lucide-react';
-import { globalDeviceDatabase } from '@/data/mockData';
 import { StatusBadge } from '@/components/StatusBadge';
+import { api } from '@/lib/api';
 import { Device } from '@/types';
 
 type SearchState = 'idle' | 'loading' | 'found-lost' | 'found-active' | 'found-found' | 'not-found';
@@ -26,23 +26,23 @@ export default function CheckDevicePage() {
   const [result, setResult] = useState<Device | null>(null);
   const [history, setHistory] = useState<string[]>([]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!query.trim()) return;
     setState('loading');
-    setTimeout(() => {
-      const q = query.trim().toLowerCase();
-      const device = globalDeviceDatabase.find(
-        (d) => d.serialNumber.toLowerCase() === q || (d.imei && d.imei === q)
-      );
-      if (device) {
-        setResult(device);
-        setState(device.status === 'lost' ? 'found-lost' : device.status === 'found' ? 'found-found' : 'found-active');
+    try {
+      const response = await api.checkDevice(query.trim());
+      if (response.device) {
+        setResult(response.device);
+        setState(response.device.status === 'lost' ? 'found-lost' : response.device.status === 'found' ? 'found-found' : 'found-active');
       } else {
         setResult(null);
         setState('not-found');
       }
       setHistory((prev) => [query.trim(), ...prev.filter((h) => h !== query.trim())].slice(0, 5));
-    }, 1400);
+    } catch {
+      setResult(null);
+      setState('not-found');
+    }
   };
 
   const examples = [

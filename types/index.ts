@@ -8,6 +8,7 @@ export type DeviceCategory =
   | 'other';
 
 export type DeviceStatus = 'active' | 'lost' | 'found';
+export type UserRole = 'user' | 'admin';
 
 export interface LoginForm {
   email: string;
@@ -44,8 +45,11 @@ export interface Device {
 }
 
 export interface AuthUser {
+  id?: string;
   fullName: string;
   email: string;
   password: string;
   phone?: string;
+  role?: UserRole;
+  createdAt?: string;
 }

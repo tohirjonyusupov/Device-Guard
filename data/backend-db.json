@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "id": "4669be64-4b58-417f-abc3-5d21b43fd849",
+      "fullName": "Tohirjon Yusupov",
+      "email": "yusupovtohir12@gmail.com",
+      "phone": "+998991173264",
+      "role": "admin",
+      "passwordHash": "20a496bcdac346f142761633586fad02:8b5fe2a18c309fc4796ee540e1f76bd653637a03fa5ab3afd19f547d014eebb9098e619fc9c12c5f60a845c7ea20eaa039dcc1c897533c4949044c989829665a",
+      "createdAt": "2026-05-29T11:54:11.887Z"
+    }
+  ],
+  "devices": [
+    {
+      "id": "f6c4785c-cbb4-4309-a75d-bfa537ee105f",
+      "ownerId": "4669be64-4b58-417f-abc3-5d21b43fd849",
+      "name": "samsung a16",
+      "brand": "samsung",
+      "model": "a16",
+      "category": "phone",
+      "serialNumber": "AAAAAA",
+      "imei": "111111",
+      "status": "lost",
+      "dateAdded": "2026-05-29",
+      "color": "qora",
+      "purchaseDate": "2026-05-13",
+      "updatedAt": "2026-05-29T12:02:29.483Z",
+      "lastLocation": "sergeli",
+      "reward": 50000,
+      "dateLost": "2026-05-29"
+    }
+  ]
+}

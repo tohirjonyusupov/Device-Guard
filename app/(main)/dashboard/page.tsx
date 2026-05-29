@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Plus,
   Search,
@@ -18,9 +19,10 @@ import {
   CheckCircle,
   Shield,
 } from 'lucide-react';
-import { mockDevices } from '@/data/mockData';
 import { DeviceCard } from '@/components/DeviceCard';
-import { DeviceCategory, DeviceStatus } from '@/types';
+import { api } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
+import { Device, DeviceCategory, DeviceStatus } from '@/types';
 
 const categoryOptions: {
   value: DeviceCategory | 'all';
@@ -45,16 +47,33 @@ const statusOptions: { value: DeviceStatus | 'all'; label: string }[] = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [devices, setDevices] = useState<Device[]>([]);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<DeviceCategory | 'all'>('all');
   const [activeStatus, setActiveStatus] = useState<DeviceStatus | 'all'>('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const total = mockDevices.length;
-  const activeCount = mockDevices.filter((d) => d.status === 'active').length;
-  const lostCount = mockDevices.filter((d) => d.status === 'lost').length;
-  const foundCount = mockDevices.filter((d) => d.status === 'found').length;
+  useEffect(() => {
+    if (!getAuthToken()) {
+      router.push('/login');
+      return;
+    }
 
-  const filtered = mockDevices.filter((d) => {
+    api
+      .listDevices()
+      .then((response) => setDevices(response.devices))
+      .catch((err) => setError(err instanceof Error ? err.message : "Qurilmalar yuklanmadi."))
+      .finally(() => setLoading(false));
+  }, [router]);
+
+  const total = devices.length;
+  const activeCount = devices.filter((d) => d.status === 'active').length;
+  const lostCount = devices.filter((d) => d.status === 'lost').length;
+  const foundCount = devices.filter((d) => d.status === 'found').length;
+
+  const filtered = useMemo(() => devices.filter((d) => {
     const matchSearch =
       !search ||
       d.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -63,7 +82,7 @@ export default function DashboardPage() {
     const matchCat = activeCategory === 'all' || d.category === activeCategory;
     const matchStatus = activeStatus === 'all' || d.status === activeStatus;
     return matchSearch && matchCat && matchStatus;
-  });
+  }), [activeCategory, activeStatus, devices, search]);
 
   const stats = [
     {
@@ -186,7 +205,15 @@ export default function DashboardPage() {
       {/* Device List */}
       <div>
         <p className="text-slate-500 text-sm mb-4">{filtered.length} ta qurilma topildi</p>
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-10 text-center text-sm text-slate-500">
+            Qurilmalar yuklanmoqda...
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 rounded-2xl border border-red-200 p-5 text-sm text-red-700">
+            {error}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="bg-white rounded-2xl border border-slate-200/70 p-16 text-center">
             <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
               <Search className="w-8 h-8 text-slate-400" />

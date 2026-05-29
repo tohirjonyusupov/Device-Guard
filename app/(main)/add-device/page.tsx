@@ -15,6 +15,8 @@ import {
   Check,
   ChevronRight,
 } from 'lucide-react';
+import { api } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
 import { DeviceCategory } from '@/types';
 
 const categories: {
@@ -51,6 +53,7 @@ export default function AddDevicePage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
   const [form, setForm] = useState<FormData>({
     name: '',
     brand: '',
@@ -72,9 +75,30 @@ export default function AddDevicePage() {
     return true;
   };
 
-  const handleSubmit = () => {
-    setSubmitted(true);
-    setTimeout(() => router.push('/dashboard'), 2000);
+  const handleSubmit = async () => {
+    if (!getAuthToken()) {
+      router.push('/login');
+      return;
+    }
+
+    setError('');
+    try {
+      await api.createDevice({
+        name: form.name,
+        brand: form.brand,
+        model: form.model,
+        category: form.category || undefined,
+        serialNumber: form.serialNumber,
+        imei: form.imei || undefined,
+        color: form.color || undefined,
+        purchaseDate: form.purchaseDate || undefined,
+        description: form.description || undefined,
+      });
+      setSubmitted(true);
+      setTimeout(() => router.push('/dashboard'), 900);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Qurilmani saqlashda xatolik yuz berdi.");
+    }
   };
 
   const selectedCat = categories.find((c) => c.value === form.category);
@@ -145,6 +169,12 @@ export default function AddDevicePage() {
         </div>
 
         <div className="p-6">
+          {error && (
+            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           {/* Step 0: Category */}
           {step === 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">

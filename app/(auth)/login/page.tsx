@@ -5,7 +5,8 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, LoaderCircle, Lock, Mail, Shield, Smartphone } from 'lucide-react';
-import { getRegisteredUser, startSession } from '@/lib/auth';
+import { api } from '@/lib/api';
+import { getRegisteredUser, saveSession } from '@/lib/auth';
 import { LoginForm } from '@/types';
 
 
@@ -29,26 +30,22 @@ export default function LoginPage() {
     if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const registeredUser = getRegisteredUser();
-
-    if (!registeredUser) {
-      setError("Akkaunt topilmadi. Avval ro'yxatdan o'ting.");
-      return;
-    }
-
-    if (
-      registeredUser.email.toLowerCase() !== form.email.trim().toLowerCase() ||
-      registeredUser.password !== form.password
-    ) {
-      setError("Email yoki parol noto'g'ri.");
-      return;
-    }
 
     setLoading(true);
-    startSession(registeredUser);
-    window.setTimeout(() => router.push('/dashboard'), 900);
+    try {
+      const session = await api.login({
+        email: form.email.trim(),
+        password: form.password,
+      });
+      saveSession(session);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Email yoki parol noto'g'ri.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -152,7 +149,7 @@ export default function LoginPage() {
                 </div>
               ) : (
                 <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-                  Demo login: avval `register` sahifasida akkaunt yarating.
+                  Akkauntingiz bo'lmasa, avval register sahifasida ro'yxatdan o'ting.
                 </div>
               )}
 

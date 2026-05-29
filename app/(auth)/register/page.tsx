@@ -4,7 +4,8 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, CheckCircle2, LoaderCircle, Lock, Mail, Phone, Shield, User } from 'lucide-react';
-import { saveRegisteredUser, startSession } from '@/lib/auth';
+import { api } from '@/lib/api';
+import { saveSession } from '@/lib/auth';
 import { RegisterForm } from '@/types';
 
 
@@ -38,7 +39,7 @@ export default function RegisterPage() {
     if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!passwordMatch) {
@@ -52,16 +53,20 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
-    const nextUser = {
-      fullName: form.fullName.trim(),
-      email: form.email.trim().toLowerCase(),
-      phone: form.phone.trim(),
-      password: form.password,
-    };
-
-    saveRegisteredUser(nextUser);
-    startSession(nextUser);
-    window.setTimeout(() => router.push('/dashboard'), 1000);
+    try {
+      const session = await api.register({
+        fullName: form.fullName.trim(),
+        email: form.email.trim().toLowerCase(),
+        phone: form.phone.trim(),
+        password: form.password,
+      });
+      saveSession(session);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ro'yxatdan o'tishda xatolik yuz berdi.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

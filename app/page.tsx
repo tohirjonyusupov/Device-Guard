@@ -17,8 +17,8 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-import { globalDeviceDatabase } from '@/data/mockData';
 import { StatusBadge } from '@/components/StatusBadge';
+import { api } from '@/lib/api';
 import { Device } from '@/types';
 
 export default function HomePage() {
@@ -30,19 +30,19 @@ export default function HomePage() {
 
   const HERO_IMAGE = 'https://images.unsplash.com/photo-1772683748238-95a91b0f7f43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkZXZpY2VzJTIwc21hcnRwaG9uZSUyMGxhcHRvcCUyMGdhZGdldHN8ZW58MXx8fHwxNzczNzM3MTM2fDA&ixlib=rb-4.1.0&q=80&w=1080';
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     setSearching(true);
     setSearchDone(false);
-    setTimeout(() => {
-      const q = searchQuery.trim().toLowerCase();
-      const device = globalDeviceDatabase.find(
-        (d) => d.serialNumber.toLowerCase() === q || (d.imei && d.imei === q)
-      );
-      setFoundDevice(device ?? null);
+    try {
+      const response = await api.checkDevice(searchQuery.trim());
+      setFoundDevice(response.device);
+    } catch {
+      setFoundDevice(null);
+    } finally {
       setSearchDone(true);
       setSearching(false);
-    }, 1200);
+    }
   };
 
   const features = [

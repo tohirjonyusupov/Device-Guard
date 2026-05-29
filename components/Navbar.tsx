@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -10,20 +10,35 @@ import {
   Search,
   Menu,
   X,
-  Bell,
+  Crown,
   User,
 } from 'lucide-react';
+import { getSessionUser } from '@/lib/auth';
+import { UserRole } from '@/types';
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [role, setRole] = useState<UserRole | null>(null);
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
 
-  const navLinks = [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/check', label: 'Qurilma tekshirish', icon: Search },
-  ];
+  useEffect(() => {
+    setRole(getSessionUser()?.role ?? null);
+  }, [pathname]);
+
+  const navLinks = useMemo(() => {
+    const links = [
+      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/check', label: 'Qurilma tekshirish', icon: Search },
+    ];
+
+    if (role === 'admin') {
+      links.push({ to: '/admin', label: 'Admin panel', icon: Crown });
+    }
+
+    return links;
+  }, [role]);
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">

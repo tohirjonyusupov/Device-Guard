@@ -19,9 +19,9 @@ export function DeviceCard({ device }: DeviceCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="text-slate-900 font-medium truncate">{device.name}</h3>
+              <h3 className="text-slate-900 font-medium truncate">{device.name.toUpperCase()}</h3>
               <p className="text-slate-500 text-sm mt-0.5">
-                {getCategoryLabel(device.category)} • {device.brand}
+                {getCategoryLabel(device.category)} • {device.brand.toUpperCase()}
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -32,7 +32,7 @@ export function DeviceCard({ device }: DeviceCardProps) {
 
           <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
             <span className="font-mono bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 text-slate-600 text-xs">
-              {device.serialNumber}
+              Seria raqam: {device.serialNumber}
             </span>
             <div className="flex items-center gap-1 text-slate-400 text-xs">
               <Calendar className="w-3 h-3" />

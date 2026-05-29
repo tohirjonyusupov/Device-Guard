@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -20,28 +20,58 @@ import {
   X,
   Check,
 } from 'lucide-react';
-import { mockDevices } from '@/data/mockData';
 import { StatusBadge } from '@/components/StatusBadge';
 import { DeviceIcon, getCategoryLabel } from '@/components/DeviceIcon';
-import { DeviceStatus } from '@/types';
+import { api } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
+import { Device, DeviceStatus } from '@/types';
 
 export default function DeviceDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const device = mockDevices.find((d) => d.id === id);
 
-  const [currentStatus, setCurrentStatus] = useState<DeviceStatus>(device?.status ?? 'active');
+  const [device, setDevice] = useState<Device | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<DeviceStatus>('active');
   const [showLostModal, setShowLostModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [lastLocation, setLastLocation] = useState(device?.lastLocation ?? '');
-  const [reward, setReward] = useState(device?.reward?.toString() ?? '');
+  const [lastLocation, setLastLocation] = useState('');
+  const [reward, setReward] = useState('');
   const [statusChanged, setStatusChanged] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [actionError, setActionError] = useState('');
 
-  if (!device) {
+  useEffect(() => {
+    if (!getAuthToken()) {
+      router.push('/login');
+      return;
+    }
+
+    api
+      .getDevice(id)
+      .then((response) => {
+        setDevice(response.device);
+        setCurrentStatus(response.device.status);
+        setLastLocation(response.device.lastLocation ?? '');
+        setReward(response.device.reward?.toString() ?? '');
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : 'Qurilma topilmadi'))
+      .finally(() => setLoading(false));
+  }, [id, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-slate-500 text-sm">Qurilma yuklanmoqda...</div>
+      </div>
+    );
+  }
+
+  if (!device || error) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-slate-700 font-medium mb-2">Qurilma topilmadi</h2>
+          <h2 className="text-slate-700 font-medium mb-2">{error || 'Qurilma topilmadi'}</h2>
           <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-700 text-sm">Dashboard ga qaytish</Link>
         </div>
       </div>
@@ -51,6 +81,34 @@ export default function DeviceDetailPage() {
   const notify = () => {
     setStatusChanged(true);
     setTimeout(() => setStatusChanged(false), 3000);
+  };
+
+  const changeStatus = async (status: DeviceStatus, input: Partial<Device> = {}) => {
+    setActionError('');
+    try {
+      const response = await api.updateDeviceStatus(device.id, {
+        status,
+        ...input,
+      });
+      setDevice(response.device);
+      setCurrentStatus(response.device.status);
+      setLastLocation(response.device.lastLocation ?? '');
+      setReward(response.device.reward?.toString() ?? '');
+      setShowLostModal(false);
+      notify();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Status o'zgartirilmadi.");
+    }
+  };
+
+  const deleteDevice = async () => {
+    setActionError('');
+    try {
+      await api.deleteDevice(device.id);
+      router.push('/dashboard');
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Qurilma o'chirilmadi.");
+    }
   };
 
   const infoItems = [
@@ -79,6 +137,11 @@ export default function DeviceDetailPage() {
       </div>
 
       {/* Toast */}
+      {actionError && (
+        <div className="fixed top-20 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-xl text-sm">
+          {actionError}
+        </div>
+      )}
       {statusChanged && (
         <div className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-sm">
           <Check className="w-4 h-4 text-emerald-400" />
@@ -177,7 +240,7 @@ export default function DeviceDetailPage() {
             )}
             {currentStatus === 'lost' && (
               <div className="space-y-2">
-                <button onClick={() => { setCurrentStatus('found'); notify(); }}
+                <button onClick={() => changeStatus('found')}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 transition-all text-sm">
                   <CheckCircle className="w-4 h-4 shrink-0" />
                   <div className="text-left">
@@ -185,7 +248,7 @@ export default function DeviceDetailPage() {
                     <div className="text-blue-500 text-xs">Qurilma topilgan sifatida ko'rinadi</div>
                   </div>
                 </button>
-                <button onClick={() => { setCurrentStatus('active'); notify(); }}
+                <button onClick={() => changeStatus('active')}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 transition-all text-sm">
                   <CheckCircle className="w-4 h-4 shrink-0" />
                   <div className="text-left">
@@ -196,7 +259,7 @@ export default function DeviceDetailPage() {
               </div>
             )}
             {currentStatus === 'found' && (
-              <button onClick={() => { setCurrentStatus('active'); notify(); }}
+              <button onClick={() => changeStatus('active')}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 transition-all text-sm">
                 <CheckCircle className="w-4 h-4 shrink-0" />
                 <div className="text-left">
@@ -275,7 +338,10 @@ export default function DeviceDetailPage() {
                 className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all text-sm">
                 Bekor qilish
               </button>
-              <button onClick={() => { setCurrentStatus('lost'); setShowLostModal(false); notify(); }}
+              <button onClick={() => changeStatus('lost', {
+                lastLocation,
+                reward: reward ? Number(reward) : undefined,
+              })}
                 className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-all text-sm shadow-sm shadow-red-200">
                 Yo'qolgan deb belgilash
               </button>
@@ -302,7 +368,7 @@ export default function DeviceDetailPage() {
                 className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all text-sm">
                 Bekor qilish
               </button>
-              <button onClick={() => router.push('/dashboard')}
+              <button onClick={deleteDevice}
                 className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-all text-sm">
                 O'chirish
               </button>
