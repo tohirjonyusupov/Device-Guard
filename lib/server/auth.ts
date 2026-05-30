@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import { NextRequest } from 'next/server';
-import { readDb } from './db';
 import { PublicUser, StoredUser } from './types';
 
 const TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
@@ -73,6 +72,6 @@ export async function getAuthUser(request: NextRequest) {
   const userId = verifyToken(token);
   if (!userId) return null;
 
-  const db = await readDb();
-  return db.users.find((user) => user.id === userId) ?? null;
+  // const db = await readDb();
+  // return db.users.find((user: StoredUser) => user.id === userId) ?? null;
 }

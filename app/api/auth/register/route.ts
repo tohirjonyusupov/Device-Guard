@@ -1,45 +1,36 @@
-import crypto from 'crypto';
-import { NextRequest } from 'next/server';
-import { createToken, hashPassword, toPublicUser } from '@/lib/server/auth';
-import { readDb, writeDb } from '@/lib/server/db';
-import { created, fail } from '@/lib/server/http';
-import { isPlainObject, optionalString, stringValue } from '@/lib/server/validation';
-import { UserRole } from '@/types';
+import bcrypt from 'bcryptjs';
+import { createUser } from "@/lib/deviceService";
 
-export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => null);
-  if (!isPlainObject(body)) return fail('Invalid request body');
+export async function POST(req: Request) {
+  const body = await req.json().catch(() => null);
 
-  const fullName = stringValue(body.fullName);
-  const email = stringValue(body.email).toLowerCase();
-  const phone = optionalString(body.phone);
-  const password = stringValue(body.password);
+  // Validation
+  if (!body?.fullName || !body?.email || !body?.password) {
+    return Response.json({ error: "fullName, email, password required" }, { status: 400 });
+  }
 
-  if (fullName.length < 3) return fail('Full name must be at least 3 characters');
-  if (!email.includes('@')) return fail('Valid email is required');
-  if (password.length < 6) return fail('Password must be at least 6 characters');
+  // Password hash
+  const passwordHash = await bcrypt.hash(body.password, 10);
 
-  const db = await readDb();
-  const exists = db.users.some((user) => user.email.toLowerCase() === email);
-  if (exists) return fail('User with this email already exists', 409);
+  try {
+    const user = await createUser({
+      fullName: body.fullName,
+      email: body.email,
+      phone: body.phone,
+      passwordHash,
+      role: 'user'
+    });
 
-  const hasAdmin = db.users.some((item) => (item.role ?? 'user') === 'admin');
-  const role: UserRole = hasAdmin ? 'user' : 'admin';
-  const user = {
-    id: crypto.randomUUID(),
-    fullName,
-    email,
-    phone,
-    role,
-    passwordHash: hashPassword(password),
-    createdAt: new Date().toISOString(),
-  };
+    return Response.json({
+      message: 'User registered successfully',
+      data: { id: user.id, email: user.email }, // passwordHash qaytarmaslik!
+    }, { status: 201 });
 
-  db.users.push(user);
-  await writeDb(db);
-
-  return created({
-    user: toPublicUser(user),
-    token: createToken(user.id),
-  });
+  } catch (error: any) {
+    // Prisma: unique constraint (email takrorlanishi)
+    if (error.code === 'P2002') {
+      return Response.json({ error: "Email already exists" }, { status: 409 });
+    }
+    return Response.json({ error: "Server error" }, { status: 500 });
+  }
 }
